@@ -1,0 +1,55 @@
+package javalab;
+
+import java.util.*;
+
+class LoyaltyService {
+ private List<Member> members;
+ private List<Reward> rewards;
+
+ public LoyaltyService() {
+     members = new ArrayList<>();
+     rewards = new ArrayList<>();
+ }
+
+
+ public void enroll(Member m) {
+     members.add(m);
+     System.out.println("Enrolled: " + m.getName() + " as " + m.getTier());
+ }
+
+ // Credit Miles
+ public void addFlight(Member m, FlightActivity f) {
+     m.creditMiles(f.getDistance(), f.getFareClass());
+     m.evaluateTier();
+     f.setMilesEarned(m.getMilesBalance());
+ }
+
+ // Redeem
+ public void redeemReward(Member m, String rewardId) {
+     Reward r = rewards.stream().filter(x -> x.getRewardId().equals(rewardId)).findFirst().orElse(null);
+     if (r == null) {
+         System.out.println("Reward not found!");
+         return;
+     }
+     if (m.getMilesBalance() >= r.getMilesRequired() && r.redeem()) {
+         System.out.println(m.getName() + " redeemed " + r.getName());
+         m.setMilesBalance(m.getMilesBalance() - r.getMilesRequired());
+     } else {
+         System.out.println("Insufficient miles or reward unavailable!");
+     }
+ }
+
+
+ public void addReward(Reward r) {
+     rewards.add(r);
+ }
+
+ public void tierSummary() {
+     Map<String, Long> summary = new HashMap<>();
+     for (Member m : members) {
+         summary.put(m.getTier(), summary.getOrDefault(m.getTier(), 0L) + 1);
+     }
+     System.out.println("---- Tier Distribution ----");
+     summary.forEach((tier, count) -> System.out.println(tier + ": " + count));
+ }
+}
