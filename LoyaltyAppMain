@@ -1,0 +1,26 @@
+package javalab;
+
+import java.util.*;
+
+public class LoyaltyAppMain {
+ public static void main(String[] args) {
+     LoyaltyService service = new LoyaltyService();
+     service.addReward(new Reward("R1", "Free Flight", 15000, 5));
+     service.addReward(new Reward("R2", "Upgrade", 10000, 2));
+     service.addReward(new Reward("R3", "Voucher", 5000, 10));
+     Member m1 = new SilverMember("M101", "Sabarish", "sab@example.com");
+     Member m2 = new GoldMember("M102", "Kumar", "kum@example.com");
+
+     service.enroll(m1);
+     service.enroll(m2);
+     FlightActivity f1 = new FlightActivity("A1", "AI202", new Date(), 1200, "Economy");
+     FlightActivity f2 = new FlightActivity("A2", "AI303", new Date(), 5000, "Business");
+     service.addFlight(m1, f1);
+     service.addFlight(m2, f2);
+     m1.printStatement();
+     m2.printStatement();
+     service.redeemReward(m1, "R3");
+     service.redeemReward(m2, "R1");
+     service.tierSummary();
+ }
+}
